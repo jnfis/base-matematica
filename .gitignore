@@ -1,0 +1,9 @@
+# Material de referencia, no forma parte del sitio
+*.pdf
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Configuracion local del editor/agente
+.claude/
