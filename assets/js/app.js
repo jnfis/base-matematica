@@ -165,16 +165,35 @@
   }
 
   /* ---------- HTML de ejercicios ---------- */
+  // Enlace a la sesión o semana donde se repasa el tema de un ejercicio de test,
+  // a partir de su campo "area": "(1.4)", "Semana 5 · …" o "Bloque B · …".
+  function enlaceArea(area) {
+    if (!area) return '';
+    let m = area.match(/\((\d+\.\d+)\)/);
+    if (m && sesionPorId[m[1]]) return '<a href="#/sesion/' + m[1] + '">sesión ' + m[1] + ' · ' + esc(sesionPorId[m[1]].titulo) + '</a>';
+    m = area.match(/Semanas?\s+(\d+)/);
+    if (m && semanaPorN[parseInt(m[1], 10)]) return '<a href="#/semana/' + m[1] + '">semana ' + m[1] + ' · ' + esc(semanaPorN[parseInt(m[1], 10)].titulo) + '</a>';
+    m = area.match(/Bloque\s+([A-E])/);
+    if (m && bloquePorLetra[m[1]]) {
+      const n = bloquePorLetra[m[1]].semanas[0];
+      return '<a href="#/semana/' + n + '">bloque ' + m[1] + ' · ' + esc(bloquePorLetra[m[1]].titulo) + ', desde la semana ' + n + '</a>';
+    }
+    return '';
+  }
+
   function feedbackHtml(ej, st) {
+    const enlace = enlaceArea(ej.area);
     if (st.ok) {
       return '<div class="ex-feedback ok"><div class="fb-title">Correcto.</div>' + (ej.solucion || '') + '</div>';
     }
     if (st.visto) {
-      return '<div class="ex-feedback info"><div class="fb-title">Solución</div>' + (ej.solucion || '') + '<p class="ex-help">Anota en tu cuaderno por qué funciona este camino y vuelve a intentarlo en el repaso de la semana.</p></div>';
+      return '<div class="ex-feedback info"><div class="fb-title">Solución</div>' + (ej.solucion || '') +
+        '<p class="ex-help">Anota en tu cuaderno por qué funciona este camino y vuelve a intentarlo más adelante.' +
+        (enlace ? ' Este tema se trabaja en la ' + enlace + '.' : '') + '</p></div>';
     }
     if (st.intentos > 0) {
       const pista = ej.pista ? '<p>' + ej.pista + '</p>' : '<p>Revisa el procedimiento del ejemplo y vuelve a intentarlo.</p>';
-      const mas = st.intentos >= 2 ? '<p class="ex-help">Si quieres, mira la solución y luego resuélvelo de nuevo en tu cuaderno.</p>' : '';
+      const mas = st.intentos >= 2 ? '<p class="ex-help">Si quieres, mira la solución y luego resuélvelo de nuevo en tu cuaderno.' + (enlace ? ' Para repasar el tema: ' + enlace + '.' : '') + '</p>' : '';
       return '<div class="ex-feedback bad"><div class="fb-title">Todavía no.</div>' + pista + mas + '</div>';
     }
     return '';
