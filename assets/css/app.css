@@ -140,6 +140,24 @@ input { font: inherit; color: inherit; }
 .skip-link { position: absolute; left: -999px; top: 8px; background: var(--primary); color: #fff; padding: 8px 12px; border-radius: 8px; z-index: 100; }
 .skip-link:focus { left: 8px; }
 
+/* ---------- barras de desplazamiento ---------- */
+/* Finas, sin flechas, con pista transparente: el pulgar flota sobre el fondo
+   y toma el color de las líneas del diseño (cambia con el tema). */
+html { scrollbar-color: var(--line-strong) transparent; }
+* { scrollbar-width: thin; }
+.sidebar { scrollbar-color: transparent transparent; transition: scrollbar-color 0.25s ease; }
+.sidebar:hover, .sidebar:focus-within { scrollbar-color: var(--line-strong) transparent; }
+/* Navegadores sin soporte de scrollbar-color (Safari): mismo aspecto con los pseudoelementos WebKit. */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background-color: var(--line-strong); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background-color: var(--text-3); }
+  ::-webkit-scrollbar-corner { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background-color: transparent; }
+  .sidebar:hover::-webkit-scrollbar-thumb { background-color: var(--line-strong); }
+}
+
 .katex { font-size: 1.06em; }
 .katex-display { margin: 0.8em 0 1em; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
 .math-fallback { font-family: var(--font-mono); background: var(--surface-2); padding: 8px 12px; border-radius: var(--radius-xs); white-space: pre-wrap; }
